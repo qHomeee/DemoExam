@@ -1,22 +1,54 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:DemoForMuhin.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:models="using:DemoForMuhin.Models"
+        xmlns:converters="using:DemoForMuhin.Presentation"
         x:Class="DemoForMuhin.Views.MainWindow"
-        x:DataType="vm:MainViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="DemoForMuhin">
-
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainViewModel />
-    </Design.DataContext>
-
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
-
+        x:DataType="vm:MainViewModel" x:CompileBindings="True"
+        Title="Чудо Обувь — каталог товаров" Icon="/Assets/app.ico"
+        Width="1050" Height="750" MinWidth="780" MinHeight="500" Background="White">
+    <Window.Resources>
+        <converters:ProductImageConverter x:Key="ProductImage" />
+        <converters:StockColorConverter x:Key="StockColor" />
+    </Window.Resources>
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Border Background="#D2F6E7" Padding="10">
+            <Grid ColumnDefinitions="100,*,Auto">
+                <Image Source="/Assets/logo.png" Height="65" Stretch="Uniform" />
+                <TextBlock Grid.Column="1" Text="Каталог товаров" FontSize="24" VerticalAlignment="Center" Margin="15,0" />
+                <Button Grid.Column="2" Content="Загрузить товары" Command="{Binding LoadProductsCommand}"
+                        Background="#70B2AF" VerticalAlignment="Center" Padding="15,8" />
+            </Grid>
+        </Border>
+        <ScrollViewer Grid.Row="1" Margin="10" HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding Products}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:Product">
+                        <Border BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="0,0,0,8"
+                                Background="{Binding TotalQuantity, Converter={StaticResource StockColor}}">
+                            <Grid ColumnDefinitions="120,*,150">
+                                <Image Source="{Binding ImageFile, Converter={StaticResource ProductImage}}"
+                                       Width="110" Height="110" Stretch="Uniform" />
+                                <StackPanel Grid.Column="1" Margin="10,0" Spacing="4">
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="17" TextWrapping="Wrap" />
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Text="{Binding Category.Name}" />
+                                        <TextBlock Text="{Binding Subcategory}" />
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Manufacturer, StringFormat='Производство: {0}'}" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding Material, StringFormat='Состав: {0}'}" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Spacing="6" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Price, StringFormat='Цена: {0:N2} руб.'}" FontWeight="Bold" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding TotalQuantity, StringFormat='Остаток: {0} пар'}" />
+                                    <TextBlock Text="{Binding QuantityLabel}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <TextBlock Grid.Row="2" Text="{Binding Status}" Margin="10" TextWrapping="Wrap" />
+    </Grid>
 </Window>
