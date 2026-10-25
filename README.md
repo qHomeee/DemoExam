@@ -1,6 +1,6 @@
 # Чудо Обувь
 
-Приложение на C# с Avalonia UI, MVVM и Entity Framework Core. При открытии окна выводится каталог из PostgreSQL.
+Приложение на C# с Avalonia UI, MVVM и Entity Framework Core. При открытии окна выводится каталог из заранее созданной базы PostgreSQL. Приложение не создаёт таблицы и не импортирует данные.
 
 ## Запуск
 
@@ -16,15 +16,14 @@ dotnet run
 
 В базе: 31 товар, 35 размеров, 92 записи остатков, всего 1274 пары.
 
-Исходные Excel-таблицы находятся в `ExamMaterials/Data`. Материалы задания и оригинальные архивы сохранены в `ExamMaterials`. Структура таблиц и данные каталога — в `Database/catalog.sql`.
+Исходные Excel-таблицы находятся в `ExamMaterials/Data`. Материалы задания и оригинальные архивы сохранены в `ExamMaterials`. В `Database/catalog.sql` сохранён отдельный SQL-файл структуры и данных. Приложение его не использует и не копирует в сборку.
 
 ## Подключение на другом компьютере
 
 Нужны .NET 8 SDK и PostgreSQL.
 
-1. Создать в PostgreSQL базу `demoformuhin`.
-2. Выполнить в ней скрипт `Database/catalog.sql`.
-3. Создать файл `.local/connection-string.txt` и указать свою строку подключения:
+1. До запуска приложения подготовить базу `demoformuhin` средствами СУБД: схему `catalog`, таблицы `categories`, `products`, `sizes`, `product_sizes` и данные из Excel.
+2. Создать файл `.local/connection-string.txt` и указать свою строку подключения:
 
 ```text
 Host=localhost;Port=5432;Database=demoformuhin;Username=имя_пользователя;Password=пароль

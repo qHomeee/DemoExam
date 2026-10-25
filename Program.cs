@@ -15,22 +15,18 @@ sealed class Program
     public static int Main(string[] args)
     {
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
-        if (args.Contains("--import-data") || args.Contains("--check-db"))
-            return RunDatabaseCommandAsync(args.Contains("--import-data")).GetAwaiter().GetResult();
+        if (args.Contains("--check-db"))
+            return CheckDatabaseAsync().GetAwaiter().GetResult();
         return BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 
-    private static async Task<int> RunDatabaseCommandAsync(bool import)
+    private static async Task<int> CheckDatabaseAsync()
     {
         Console.SetOut(new StreamWriter(Console.OpenStandardOutput(), new System.Text.UTF8Encoding(false)) { AutoFlush = true });
         try
         {
             await using var db = new CatalogDbContext();
-            if (import)
-            {
-                var script = Path.Combine(AppContext.BaseDirectory, "Database", "catalog.sql");
-                await db.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync(script));
-            }
+
             var count = await db.Products.CountAsync();
             var stockRows = await db.ProductSizes.CountAsync();
             var pairs = await db.ProductSizes.SumAsync(x => x.AvailableQuantity);

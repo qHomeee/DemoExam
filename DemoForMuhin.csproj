@@ -10,7 +10,6 @@
   <ItemGroup>
     <Compile Remove=".local\**\*.cs" />
     <Compile Remove="Verification\**\*.cs;artifacts\**\*.cs;**\bin\**\*.cs;**\obj\**\*.cs" />
-    <None Update="Database\catalog.sql" CopyToOutputDirectory="PreserveNewest" />
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
