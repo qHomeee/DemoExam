@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Verification\**\*.cs" />
     <Compile Remove=".local\**\*.cs" />
     <None Update="Database\catalog.sql" CopyToOutputDirectory="PreserveNewest" />
     <AvaloniaResource Include="Assets\**" />
@@ -27,5 +26,6 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
   </ItemGroup>
 </Project>
+
 
 
