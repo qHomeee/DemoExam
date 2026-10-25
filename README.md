@@ -18,22 +18,29 @@ dotnet run
 
 Исходные Excel-таблицы находятся в `ExamMaterials/Data`. Материалы задания и оригинальные архивы сохранены в `ExamMaterials`. В `Database/catalog.sql` сохранён отдельный SQL-файл структуры и данных. Приложение его не использует и не копирует в сборку.
 
-## Подключение на другом компьютере
+## Перенос на другой компьютер
 
-Нужны .NET 8 SDK и PostgreSQL.
+В Git включены исходники проекта, все 34 файла из `Assets`, SQL-файл БД и материалы экзамена. Изображения встраиваются в приложение при сборке. Папки `bin` и `obj` переносить не нужно.
 
-1. До запуска приложения подготовить базу `demoformuhin` средствами СУБД: схему `catalog`, таблицы `categories`, `products`, `sizes`, `product_sizes` и данные из Excel.
-2. Создать файл `.local/connection-string.txt` и указать свою строку подключения:
+1. Установить .NET 8 SDK и PostgreSQL.
+2. Скопировать или клонировать репозиторий целиком.
+3. В pgAdmin или DBeaver создать базу `demoformuhin` и выполнить в ней `Database/catalog.sql`. Скрипт восстановит структуру и данные каталога; приложение его не запускает.
+4. В папке проекта подготовить локальную настройку подключения:
 
-```text
-Host=localhost;Port=5432;Database=demoformuhin;Username=имя_пользователя;Password=пароль
+```powershell
+New-Item -ItemType Directory -Path .local -Force | Out-Null
+Copy-Item .\connection-string.example.txt .\.local\connection-string.txt
 ```
 
-Проверить подключение:
+5. Открыть `.local/connection-string.txt` и указать адрес PostgreSQL, имя пользователя и свой пароль вместо `CHANGE_ME`.
+6. Проверить подключение и запустить приложение:
 
 ```powershell
 dotnet run -- --check-db
+dotnet run
 ```
+
+При первом запуске .NET восстановит NuGet-пакеты; для этого нужен доступ к источнику пакетов. Настоящий пароль остаётся в локальном файле и не попадает в Git. В репозитории хранится только `connection-string.example.txt` с примером.
 
 ## Текущий этап
 
