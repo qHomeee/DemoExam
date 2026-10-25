@@ -39,7 +39,7 @@ sealed class Program
         }
         catch (Exception error)
         {
-            Console.Error.WriteLine($"Ошибка БД ({error.GetType().Name}). Проверьте подключение и выполните Scripts/Setup-Database.ps1.");
+            Console.Error.WriteLine($"Ошибка БД ({error.GetType().Name})");
             return 1;
         }
     }

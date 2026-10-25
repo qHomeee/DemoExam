@@ -20,13 +20,15 @@ dotnet run
 
 ## Подключение на другом компьютере
 
-Нужны .NET 8 SDK и PostgreSQL. Для создания отдельной базы и импорта каталога:
+Нужны .NET 8 SDK и PostgreSQL.
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\Scripts\Setup-Database.ps1 -PostgresBin 'C:\Program Files\PostgreSQL\18\bin'
+1. Создать в PostgreSQL базу `demoformuhin`.
+2. Выполнить в ней скрипт `Database/catalog.sql`.
+3. Создать файл `.local/connection-string.txt` и указать свою строку подключения:
+
+```text
+Host=localhost;Port=5432;Database=demoformuhin;Username=имя_пользователя;Password=пароль
 ```
-
-Скрипт запросит пароль администратора. Путь к PostgreSQL на текущем компьютере: `X:\SQL\bin`.
 
 Проверить подключение:
 

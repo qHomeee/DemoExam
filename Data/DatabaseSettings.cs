@@ -16,7 +16,7 @@ public static class DatabaseSettings
                 connection = File.ReadAllText(configPath).Trim();
         }
         if (string.IsNullOrWhiteSpace(connection))
-            throw new InvalidOperationException("Подключение не настроено. Выполните Scripts/Setup-Database.ps1 и нажмите «Обновить из БД».");
+            throw new InvalidOperationException("Подключение не настроено. Укажите строку подключения в .local/connection-string.txt или переменной DEMOFORMUHIN_CONNECTION_STRING.");
 
         var builder = new NpgsqlConnectionStringBuilder(connection)
         {
@@ -41,4 +41,3 @@ public static class DatabaseSettings
         return null;
     }
 }
-
