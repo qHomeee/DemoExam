@@ -50,5 +50,6 @@ if (-not (Test-Path -LiteralPath $configFile)) {
         [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($passwordPointer)
     }
 }
-& dotnet run --project $projectFile -- --seed-demo
-if ($LASTEXITCODE -ne 0) { throw 'Не удалось подготовить учебные данные.' }
+& dotnet run --project $projectFile -- --import-data
+if ($LASTEXITCODE -ne 0) { throw 'Не удалось подготовить исходные данные.' }
+

@@ -1,9 +1,10 @@
 using Avalonia;
 using System;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DemoForMuhin.Data;
-using DemoForMuhin.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace DemoForMuhin;
@@ -13,35 +14,36 @@ sealed class Program
     [STAThread]
     public static int Main(string[] args)
     {
-        if (args.Contains("--seed-demo") || args.Contains("--check-db"))
-            return RunDatabaseCommandAsync(args.Contains("--seed-demo")).GetAwaiter().GetResult();
+        CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
+        if (args.Contains("--import-data") || args.Contains("--check-db"))
+            return RunDatabaseCommandAsync(args.Contains("--import-data")).GetAwaiter().GetResult();
         return BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 
-    private static async Task<int> RunDatabaseCommandAsync(bool seed)
+    private static async Task<int> RunDatabaseCommandAsync(bool import)
     {
+        Console.SetOut(new StreamWriter(Console.OpenStandardOutput(), new System.Text.UTF8Encoding(false)) { AutoFlush = true });
         try
         {
-            if (seed)
+            await using var db = new CatalogDbContext();
+            if (import)
             {
-                await using var db = new CatalogDbContext(DatabaseSettings.CreateOptions());
-                await DemoData.SeedAsync(db);
+                var script = Path.Combine(AppContext.BaseDirectory, "Database", "catalog.sql");
+                await db.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync(script));
             }
-            var products = await new CatalogService().LoadAsync(DateOnly.FromDateTime(DateTime.Today));
-            Console.WriteLine($"PostgreSQL: прочитано моделей — {products.Count}.");
-            foreach (var product in products)
-                Console.WriteLine($"#{product.Id} {product.Name}: {product.CurrentPrice:F2} руб., доступно {product.AvailableQuantity}, скидка {product.HasDiscount}");
+            var count = await db.Products.CountAsync();
+            var stockRows = await db.ProductSizes.CountAsync();
+            var pairs = await db.ProductSizes.SumAsync(x => x.AvailableQuantity);
+            Console.WriteLine($"PostgreSQL: {count} моделей, {stockRows} записей остатков, {pairs} пар.");
             return 0;
         }
         catch (Exception error)
         {
-            Console.Error.WriteLine($"Ошибка БД ({error.GetType().Name}). Проверьте PostgreSQL и локальную настройку подключения; пароль в журнал не выводится.");
+            Console.Error.WriteLine($"Ошибка БД ({error.GetType().Name}). Проверьте подключение и выполните Scripts/Setup-Database.ps1.");
             return 1;
         }
     }
 
     public static AppBuilder BuildAvaloniaApp() => AppBuilder.Configure<App>()
-        .UsePlatformDetect()
-        .WithInterFont()
-        .LogToTrace();
+        .UsePlatformDetect().WithInterFont().LogToTrace();
 }

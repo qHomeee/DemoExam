@@ -1,13 +1,12 @@
 using System;
 using System.IO;
-using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 namespace DemoForMuhin.Data;
 
 public static class DatabaseSettings
 {
-    public static DbContextOptions<CatalogDbContext> CreateOptions()
+    public static string GetConnectionString()
     {
         var connection = Environment.GetEnvironmentVariable("DEMOFORMUHIN_CONNECTION_STRING");
         if (string.IsNullOrWhiteSpace(connection))
@@ -25,7 +24,7 @@ public static class DatabaseSettings
             CommandTimeout = 15,
             IncludeErrorDetail = false
         };
-        return new DbContextOptionsBuilder<CatalogDbContext>().UseNpgsql(builder.ConnectionString).Options;
+        return builder.ConnectionString;
     }
 
     private static string? FindLocalConfiguration()
@@ -42,3 +41,4 @@ public static class DatabaseSettings
         return null;
     }
 }
+
