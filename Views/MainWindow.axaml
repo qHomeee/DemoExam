@@ -13,11 +13,9 @@
     </Window.Resources>
     <Grid RowDefinitions="Auto,*,Auto">
         <Border Background="#D2F6E7" Padding="10">
-            <Grid ColumnDefinitions="100,*,Auto">
+            <Grid ColumnDefinitions="100,*">
                 <Image Source="/Assets/logo.png" Height="65" Stretch="Uniform" />
                 <TextBlock Grid.Column="1" Text="Каталог товаров" FontSize="24" VerticalAlignment="Center" Margin="15,0" />
-                <Button Grid.Column="2" Content="Загрузить товары" Command="{Binding LoadProductsCommand}"
-                        Background="#70B2AF" VerticalAlignment="Center" Padding="15,8" />
             </Grid>
         </Border>
         <ScrollViewer Grid.Row="1" Margin="10" HorizontalScrollBarVisibility="Disabled">
@@ -52,3 +50,4 @@
         <TextBlock Grid.Row="2" Text="{Binding Status}" Margin="10" TextWrapping="Wrap" />
     </Grid>
 </Window>
+

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
-using Avalonia.Input;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using DemoForMuhin.Data;
@@ -47,13 +46,10 @@ public static class Program
                 var vm = new MainViewModel();
                 var window = new MainWindow { DataContext = vm };
                 window.Show();
-                var button = window.GetVisualDescendants().OfType<Button>().Single(x => Equals(x.Content, "Загрузить товары"));
-                Check(ReferenceEquals(button.Command, vm.LoadProductsCommand), "Button is bound to the load command");
-                var point = button.TranslatePoint(new Point(10, 10), window) ?? throw new Exception("Button not laid out");
-                window.MouseDown(point, MouseButton.Left, RawInputModifiers.None);
-                window.MouseUp(point, MouseButton.Left, RawInputModifiers.None);
-                if (vm.LoadProductsCommand.ExecutionTask is { } load) await load;
-                Check(vm.Products.Count == 31 && !vm.IsLoading, "UI button loads real data");
+                Check(!window.GetVisualDescendants().OfType<Button>().Any(), "The catalog has no load button");
+                var load = vm.LoadProductsCommand.ExecutionTask ?? throw new Exception("Opening the window did not start loading");
+                await load;
+                Check(vm.Products.Count == 31 && !vm.IsLoading, "Opening the window automatically loads real data");
                 Check(vm.Products.All(x => x.Category is not null && x.Sizes.Count > 0), "Related categories and stock are loaded");
                 Check(vm.Products.Count(x => x.TotalQuantity <= 3) == 3, "Three low-stock models match the source");
                 Check(vm.Products.First().Price == 2190m && vm.Products.First().TotalQuantity == 120, "First product price and quantity match Excel");
@@ -102,6 +98,7 @@ public static class Program
         Console.WriteLine("PASS: " + message);
     }
 }
+
 
 
 

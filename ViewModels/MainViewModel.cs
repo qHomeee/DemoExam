@@ -16,7 +16,7 @@ public partial class MainViewModel : ViewModelBase
     private ObservableCollection<Product> _products = new();
 
     [ObservableProperty]
-    private string _status = "Нажмите «Загрузить товары».";
+    private string _status = "Загрузка каталога...";
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoadProductsCommand))]
@@ -43,7 +43,7 @@ public partial class MainViewModel : ViewModelBase
         }
         catch (Exception)
         {
-            Status = "Ошибка загрузки. Проверьте PostgreSQL и файл .local/connection-string.txt. Затем повторите загрузку.";
+            Status = "Ошибка загрузки. Проверьте PostgreSQL и файл .local/connection-string.txt. Затем перезапустите приложение.";
         }
         finally
         {
@@ -51,4 +51,5 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 }
+
 
