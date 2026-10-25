@@ -6,12 +6,25 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DemoForMuhin.Data;
 using DemoForMuhin.Models;
+using DemoForMuhin.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace DemoForMuhin.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
+    private readonly AuthService _authService;
+
+    public event Action? SignOutRequested;
+    public string CurrentUserName => _authService.CurrentUser?.FullName ?? "Гость";
+    public string CurrentRoleName => _authService.CurrentUser?.Role.Name ?? "Просмотр каталога";
+    public string SignOutCaption => _authService.CurrentUser is null ? "Войти" : "Выйти";
+
+    public MainViewModel(AuthService authService) => _authService = authService;
+
+    [RelayCommand]
+    private void SignOut() => SignOutRequested?.Invoke();
+
     [ObservableProperty]
     private ObservableCollection<Product> _products = new();
 
@@ -51,5 +64,3 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 }
-
-

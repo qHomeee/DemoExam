@@ -1,0 +1,29 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DemoForMuhin.ViewModels"
+        x:Class="DemoForMuhin.Views.LoginWindow"
+        x:DataType="vm:LoginViewModel" x:CompileBindings="True"
+        Title="Чудо Обувь — вход" Icon="/Assets/app.ico"
+        Width="430" Height="380" CanResize="False"
+        WindowStartupLocation="CenterScreen" Background="White">
+    <Grid RowDefinitions="Auto,*">
+        <Border Background="#D2F6E7" Padding="12">
+            <StackPanel Orientation="Horizontal" Spacing="15">
+                <Image Source="/Assets/logo.png" Width="65" Height="55" Stretch="Uniform" />
+                <TextBlock Text="Чудо Обувь" FontSize="23" VerticalAlignment="Center" />
+            </StackPanel>
+        </Border>
+        <StackPanel Grid.Row="1" Margin="20" Spacing="10">
+            <TextBlock Text="Вход в систему" FontSize="19" />
+            <TextBox Text="{Binding Login, Mode=TwoWay}" PlaceholderText="Введите логин"
+                     IsEnabled="{Binding CanInteract}" />
+            <Button Content="Войти" Command="{Binding SignInCommand}" IsDefault="True"
+                    Background="#70B2AF" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+            <Button Content="Просмотреть каталог без входа" Command="{Binding OpenGuestCommand}"
+                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+            <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsBusy}" Height="3" />
+            <TextBlock Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}"
+                       Foreground="Red" TextWrapping="Wrap" />
+        </StackPanel>
+    </Grid>
+</Window>

@@ -5,6 +5,8 @@ namespace DemoForMuhin.Data;
 
 public class CatalogDbContext : DbContext
 {
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Role> Roles => Set<Role>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Product> Products => Set<Product>();
     public DbSet<ShoeSize> Sizes => Set<ShoeSize>();
@@ -16,6 +18,23 @@ public class CatalogDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("catalog");
+        var role = modelBuilder.Entity<Role>();
+        role.ToTable("roles");
+        role.Property(x => x.Id).HasColumnName("id");
+        role.Property(x => x.Name).HasColumnName("name").HasMaxLength(80);
+        role.HasIndex(x => x.Name).IsUnique();
+
+        var user = modelBuilder.Entity<User>();
+        user.ToTable("users");
+        user.Property(x => x.Id).HasColumnName("id");
+        user.Property(x => x.LastName).HasColumnName("last_name").HasMaxLength(80);
+        user.Property(x => x.FirstName).HasColumnName("first_name").HasMaxLength(80);
+        user.Property(x => x.Patronymic).HasColumnName("patronymic").HasMaxLength(80);
+        user.Property(x => x.Login).HasColumnName("login").HasMaxLength(80);
+        user.Property(x => x.RoleId).HasColumnName("role_id");
+        user.HasIndex(x => x.Login).IsUnique();
+        user.HasOne(x => x.Role).WithMany().HasForeignKey(x => x.RoleId).OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<Category>().ToTable("categories");
         modelBuilder.Entity<Category>().Property(x => x.Id).HasColumnName("id");
         modelBuilder.Entity<Category>().Property(x => x.Name).HasColumnName("name");

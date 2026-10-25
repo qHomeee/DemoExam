@@ -13,9 +13,15 @@
     </Window.Resources>
     <Grid RowDefinitions="Auto,*,Auto">
         <Border Background="#D2F6E7" Padding="10">
-            <Grid ColumnDefinitions="100,*">
+            <Grid ColumnDefinitions="100,*,Auto">
                 <Image Source="/Assets/logo.png" Height="65" Stretch="Uniform" />
                 <TextBlock Grid.Column="1" Text="Каталог товаров" FontSize="24" VerticalAlignment="Center" Margin="15,0" />
+                <StackPanel Grid.Column="2" Spacing="3" HorizontalAlignment="Right">
+                    <TextBlock Text="{Binding CurrentUserName}" FontWeight="Bold" HorizontalAlignment="Right" />
+                    <TextBlock Text="{Binding CurrentRoleName}" FontSize="12" HorizontalAlignment="Right" />
+                    <Button Content="{Binding SignOutCaption}" Command="{Binding SignOutCommand}"
+                            HorizontalAlignment="Right" Background="#70B2AF" Padding="12,4" />
+                </StackPanel>
             </Grid>
         </Border>
         <ScrollViewer Grid.Row="1" Margin="10" HorizontalScrollBarVisibility="Disabled">
@@ -50,4 +56,3 @@
         <TextBlock Grid.Row="2" Text="{Binding Status}" Margin="10" TextWrapping="Wrap" />
     </Grid>
 </Window>
-
