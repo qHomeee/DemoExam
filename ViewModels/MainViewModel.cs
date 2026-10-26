@@ -45,7 +45,6 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             await using var db = new CatalogDbContext();
-            // Include загружает связанные категории и остатки по размерам.
             var products = await db.Products.AsNoTracking()
                 .Include(x => x.Category)
                 .Include(x => x.Sizes)
