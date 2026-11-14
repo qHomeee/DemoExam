@@ -11,48 +11,67 @@
         <converters:ProductImageConverter x:Key="ProductImage" />
         <converters:StockColorConverter x:Key="StockColor" />
     </Window.Resources>
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
         <Border Background="#D2F6E7" Padding="10">
             <Grid ColumnDefinitions="100,*,Auto">
                 <Image Source="/Assets/logo.png" Height="65" Stretch="Uniform" />
-                <TextBlock Grid.Column="1" Text="Каталог товаров" FontSize="24" VerticalAlignment="Center" Margin="15,0" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0" Spacing="6">
+                    <TextBlock Text="Каталог товаров" FontSize="24" />
+                    <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsSignedIn}">
+                        <Button Content="{Binding CartCaption}" Click="OpenCart" Background="#70B2AF" />
+                        <Button Content="Заказы" Click="OpenOrders" IsVisible="{Binding CanManageOrders}" />
+                    </StackPanel>
+                </StackPanel>
                 <StackPanel Grid.Column="2" Spacing="3" HorizontalAlignment="Right">
                     <TextBlock Text="{Binding CurrentUserName}" FontWeight="Bold" HorizontalAlignment="Right" />
                     <TextBlock Text="{Binding CurrentRoleName}" FontSize="12" HorizontalAlignment="Right" />
-                    <Button Content="{Binding SignOutCaption}" Command="{Binding SignOutCommand}"
-                            HorizontalAlignment="Right" Background="#70B2AF" Padding="12,4" />
+                    <Button Content="{Binding SignOutCaption}" Click="SignOut" HorizontalAlignment="Right" Padding="12,4" />
                 </StackPanel>
             </Grid>
         </Border>
-        <ScrollViewer Grid.Row="1" Margin="10" HorizontalScrollBarVisibility="Disabled">
+
+        <Grid Grid.Row="1" IsVisible="{Binding IsSignedIn}" Margin="10,10,10,0" ColumnDefinitions="*,190,165" ColumnSpacing="8">
+            <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Поиск по названию и описанию" />
+            <ComboBox Grid.Column="1" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}"
+                      HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CategoryFilter">
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <ComboBox Grid.Column="2" ItemsSource="{Binding SortOptions}" SelectedIndex="{Binding SortIndex}"
+                      HorizontalAlignment="Stretch" />
+        </Grid>
+        <ScrollViewer Grid.Row="2" Margin="10" HorizontalScrollBarVisibility="Disabled">
             <ItemsControl ItemsSource="{Binding Products}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models:Product">
-                        <Border BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="0,0,0,8"
+                        <Button Click="OpenProduct" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                BorderBrush="#BBBBBB" BorderThickness="1" Padding="10" Margin="0,0,0,8"
                                 Background="{Binding TotalQuantity, Converter={StaticResource StockColor}}">
                             <Grid ColumnDefinitions="120,*,150">
                                 <Image Source="{Binding ImageFile, Converter={StaticResource ProductImage}}"
                                        Width="110" Height="110" Stretch="Uniform" />
                                 <StackPanel Grid.Column="1" Margin="10,0" Spacing="4">
                                     <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="17" TextWrapping="Wrap" />
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock Text="{Binding Category.Name}" />
-                                        <TextBlock Text="{Binding Subcategory}" />
-                                    </StackPanel>
+                                    <TextBlock Text="{Binding Category.Name}" />
                                     <TextBlock Text="{Binding Manufacturer, StringFormat='Производство: {0}'}" TextWrapping="Wrap" />
                                     <TextBlock Text="{Binding Material, StringFormat='Состав: {0}'}" TextWrapping="Wrap" />
                                 </StackPanel>
-                                <StackPanel Grid.Column="2" Spacing="6" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Price, StringFormat='Цена: {0:N2} руб.'}" FontWeight="Bold" TextWrapping="Wrap" />
+                                <StackPanel Grid.Column="2" Spacing="4" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding SalePrice, StringFormat='{}{0:N2} ₽'}" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} ₽'}" TextDecorations="Strikethrough"
+                                               IsVisible="{Binding HasDiscount}" />
                                     <TextBlock Text="{Binding TotalQuantity, StringFormat='Остаток: {0} пар'}" />
                                     <TextBlock Text="{Binding QuantityLabel}" />
                                 </StackPanel>
                             </Grid>
-                        </Border>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        <TextBlock Grid.Row="2" Text="{Binding Status}" Margin="10" TextWrapping="Wrap" />
+        <TextBlock Grid.Row="3" Text="{Binding Status}" Margin="10" TextWrapping="Wrap" />
     </Grid>
 </Window>

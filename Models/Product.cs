@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using DemoForMuhin.Services;
 
 namespace DemoForMuhin.Models;
 
@@ -23,4 +24,13 @@ public class Product
 
     [NotMapped]
     public string QuantityLabel => TotalQuantity > 5 ? "много" : "мало";
+
+    [NotMapped]
+    public bool HasDiscount { get; set; }
+
+    [NotMapped]
+    public decimal SalePrice => Pricing.SalePrice(Price, HasDiscount);
+
+    [NotMapped]
+    public string SizeRange => string.Join(", ", Sizes.OrderBy(item => item.Size.Value).Select(item => $"{item.Size.Value:0.#}"));
 }

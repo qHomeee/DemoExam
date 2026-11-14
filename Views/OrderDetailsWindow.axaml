@@ -1,0 +1,46 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="using:DemoForMuhin.Models"
+        x:Class="DemoForMuhin.Views.OrderDetailsWindow" x:DataType="models:Order" x:CompileBindings="True"
+        Title="Чудо Обувь — состав заказа" Icon="/Assets/app.ico" WindowStartupLocation="CenterOwner"
+        Width="795" Height="500" MinWidth="650" MinHeight="390" Background="White">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Border Padding="16" Background="#D2F6E7">
+            <StackPanel Spacing="8">
+                <TextBlock Text="{Binding Id, StringFormat='Заказ №{0}'}" FontSize="22" FontWeight="Bold" />
+                <TextBlock Text="{Binding Customer.FullName, StringFormat='Клиент: {0}'}" />
+                <TextBlock x:Name="ReadOnlyDate" Text="{Binding OrderDate, StringFormat='Дата: {0:dd.MM.yyyy}'}" />
+                <StackPanel x:Name="EditableDate" IsVisible="False" Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="Дата заказа" VerticalAlignment="Center" />
+                    <CalendarDatePicker x:Name="OrderDateInput" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <ListBox Grid.Row="1" x:Name="ItemList" Margin="16" SelectionChanged="SelectItem">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="models:OrderItem">
+                    <Grid ColumnDefinitions="*,125" ColumnSpacing="10">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="{Binding ProductSize.Product.Name}" TextWrapping="Wrap" FontWeight="Bold" />
+                            <WrapPanel>
+                                <TextBlock Text="{Binding ProductSize.Product.Manufacturer}" Margin="0,0,10,0" />
+                                <TextBlock Text="{Binding ProductSize.Size.Value, StringFormat='Размер {0:0.#}'}" Margin="0,0,10,0" />
+                                <TextBlock Text="{Binding Quantity, StringFormat='{}{0} пар'}" Margin="0,0,10,0" />
+                                <TextBlock Text="{Binding UnitPrice, StringFormat='{}{0:N2} ₽ / пара'}" />
+                            </WrapPanel>
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" Text="{Binding Total, StringFormat='{}{0:N2} ₽'}"
+                                   HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <DockPanel Grid.Row="2" Margin="16,0,16,16" LastChildFill="False">
+            <Button Content="Назад" Click="GoBack" Margin="0,0,8,0" />
+            <Button x:Name="RemoveButton" Content="Убрать позицию" Click="RemoveItem" IsVisible="False" IsEnabled="False" />
+            <Button x:Name="SaveButton" DockPanel.Dock="Right" Content="Сохранить" Click="Save"
+                    IsVisible="False" Background="#70B2AF" />
+            <TextBlock x:Name="TotalText" DockPanel.Dock="Right" FontWeight="Bold"
+                       VerticalAlignment="Center" Margin="0,0,12,0" />
+        </DockPanel>
+    </Grid>
+</Window>

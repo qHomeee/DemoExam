@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DemoForMuhin.ViewModels" xmlns:models="using:DemoForMuhin.Models"
+        x:Class="DemoForMuhin.Views.CartWindow" x:DataType="vm:CartViewModel" x:CompileBindings="True"
+        Title="Чудо Обувь — оформление заказа" Icon="/Assets/app.ico" WindowStartupLocation="CenterOwner"
+        Width="790" Height="535" MinWidth="660" MinHeight="410" Background="White">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Border Padding="16" Background="#D2F6E7">
+            <StackPanel Spacing="6">
+                <TextBlock Text="Оформление заказа" FontSize="22" FontWeight="Bold" />
+                <TextBlock x:Name="CustomerName" />
+                <ComboBox x:Name="CustomerPicker" IsVisible="False" PlaceholderText="Выберите клиента" HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:User">
+                            <TextBlock Text="{Binding FullName}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+        </Border>
+        <Grid Grid.Row="1" Margin="16" RowDefinitions="Auto,*,Auto" RowSpacing="8">
+            <TextBlock x:Name="EmptyMessage" Text="Корзина пуста. Добавьте товары из каталога." />
+            <ListBox x:Name="CartList" Grid.Row="1" ItemsSource="{Binding Lines}" SelectionChanged="SelectLine">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CartLine">
+                        <Grid ColumnDefinitions="*,115" ColumnSpacing="10">
+                            <StackPanel Spacing="3">
+                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" FontWeight="Bold" />
+                                <WrapPanel>
+                                    <TextBlock Text="{Binding Manufacturer}" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding Size, StringFormat='Размер {0:0.#}'}" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding Quantity, StringFormat='{}{0} пар'}" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding UnitPrice, StringFormat='{}{0:N2} ₽ / пара'}" />
+                                </WrapPanel>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1" Text="{Binding Total, StringFormat='{}{0:N2} ₽'}"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <WrapPanel Grid.Row="2" x:Name="LineControls" IsEnabled="False">
+                <TextBlock Text="Пар" VerticalAlignment="Center" Margin="0,0,8,0" />
+                <TextBox x:Name="QuantityInput" Width="66" Margin="0,0,8,0" />
+                <Button Content="Изменить количество" Click="ChangeQuantity" Margin="0,0,8,0" />
+                <Button Content="Убрать позицию" Click="RemoveLine" />
+            </WrapPanel>
+        </Grid>
+        <DockPanel Grid.Row="2" Margin="16,0,16,16" LastChildFill="False">
+            <Button Content="Назад в каталог" Click="GoBack" Margin="0,0,8,0" />
+            <Button x:Name="ClearButton" Content="Отменить заказ" Click="ClearOrder" />
+            <Button x:Name="ConfirmButton" Content="Подтвердить" Click="ConfirmOrder"
+                    Background="#70B2AF" DockPanel.Dock="Right" />
+            <TextBlock Text="{Binding Total, StringFormat='Итого: {0:N2} ₽'}" FontWeight="Bold"
+                       DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,12,0" />
+        </DockPanel>
+    </Grid>
+</Window>

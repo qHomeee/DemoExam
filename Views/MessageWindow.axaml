@@ -1,0 +1,15 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DemoForMuhin.Views.MessageWindow" WindowStartupLocation="CenterOwner"
+        Width="460" SizeToContent="Height" CanResize="False" Background="White" Icon="/Assets/app.ico">
+    <StackPanel Margin="18" Spacing="15">
+        <Grid ColumnDefinitions="34,*">
+            <TextBlock x:Name="MessageIcon" FontSize="23" />
+            <TextBlock x:Name="MessageText" Grid.Column="1" TextWrapping="Wrap" />
+        </Grid>
+        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+            <Button x:Name="CancelButton" Content="Отмена" Click="Cancel" IsCancel="True" />
+            <Button x:Name="AcceptButton" Content="ОК" Click="Accept" Background="#70B2AF" />
+        </StackPanel>
+    </StackPanel>
+</Window>

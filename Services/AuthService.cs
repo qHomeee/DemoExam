@@ -8,6 +8,8 @@ namespace DemoForMuhin.Services;
 public class AuthService
 {
     public User? CurrentUser { get; private set; }
+    public bool CanManageOrders => CurrentUser?.Role.Name is "Менеджер" or "Администратор";
+    public bool CanEditOrders => CurrentUser?.Role.Name == "Администратор";
 
     public async Task<bool> LoginAsync(string login)
     {

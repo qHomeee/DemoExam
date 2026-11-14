@@ -11,6 +11,8 @@ public class CatalogDbContext : DbContext
     public DbSet<Product> Products => Set<Product>();
     public DbSet<ShoeSize> Sizes => Set<ShoeSize>();
     public DbSet<ProductSize> ProductSizes => Set<ProductSize>();
+    public DbSet<Order> Orders => Set<Order>();
+    public DbSet<OrderItem> OrderItems => Set<OrderItem>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql(DatabaseSettings.GetConnectionString());
@@ -63,5 +65,22 @@ public class CatalogDbContext : DbContext
         stock.Property(x => x.AvailableQuantity).HasColumnName("available_quantity");
         stock.HasOne(x => x.Product).WithMany(x => x.Sizes).HasForeignKey(x => x.ProductId);
         stock.HasOne(x => x.Size).WithMany().HasForeignKey(x => x.SizeId);
+
+        var order = modelBuilder.Entity<Order>();
+        order.ToTable("orders");
+        order.Property(x => x.Id).HasColumnName("id");
+        order.Property(x => x.OrderDate).HasColumnName("order_date");
+        order.Property(x => x.CustomerId).HasColumnName("customer_id");
+        order.HasOne(x => x.Customer).WithMany().HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.Restrict);
+
+        var item = modelBuilder.Entity<OrderItem>();
+        item.ToTable("order_items");
+        item.HasKey(x => new { x.OrderId, x.ProductSizeId });
+        item.Property(x => x.OrderId).HasColumnName("order_id");
+        item.Property(x => x.ProductSizeId).HasColumnName("product_size_id");
+        item.Property(x => x.Quantity).HasColumnName("quantity");
+        item.Property(x => x.UnitPrice).HasColumnName("unit_price").HasPrecision(12, 2);
+        item.HasOne<Order>().WithMany(x => x.Items).HasForeignKey(x => x.OrderId).OnDelete(DeleteBehavior.Cascade);
+        item.HasOne(x => x.ProductSize).WithMany().HasForeignKey(x => x.ProductSizeId).OnDelete(DeleteBehavior.Restrict);
     }
 }

@@ -1,0 +1,40 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="using:DemoForMuhin.Models"
+        x:Class="DemoForMuhin.Views.OrdersWindow" x:CompileBindings="True"
+        Title="Чудо Обувь — заказы" Icon="/Assets/app.ico" WindowStartupLocation="CenterOwner"
+        Width="780" Height="530" MinWidth="650" MinHeight="410" Background="White">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Border Padding="16" Background="#D2F6E7">
+            <TextBlock Text="Заказы" FontSize="22" FontWeight="Bold" />
+        </Border>
+        <Grid Grid.Row="1" Margin="16" RowDefinitions="Auto,Auto,*" RowSpacing="8">
+            <TextBlock x:Name="StatusText" TextWrapping="Wrap" />
+            <Grid Grid.Row="1" ColumnDefinitions="75,120,*,120" ColumnSpacing="10" Margin="10,0">
+                <TextBlock Text="№" FontWeight="Bold" />
+                <TextBlock Grid.Column="1" Text="Дата заказа" FontWeight="Bold" />
+                <TextBlock Grid.Column="2" Text="Клиент" FontWeight="Bold" />
+                <TextBlock Grid.Column="3" Text="Сумма" FontWeight="Bold" HorizontalAlignment="Right" />
+            </Grid>
+            <ListBox Grid.Row="2" x:Name="OrderList" SelectionChanged="SelectOrder" DoubleTapped="OpenFromList">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:Order">
+                        <Grid ColumnDefinitions="75,120,*,120" ColumnSpacing="10">
+                            <TextBlock Text="{Binding Id}" />
+                            <TextBlock Grid.Column="1" Text="{Binding OrderDate, StringFormat='{}{0:dd.MM.yyyy}'}" />
+                            <TextBlock Grid.Column="2" Text="{Binding Customer.FullName}" TextWrapping="Wrap" />
+                            <TextBlock Grid.Column="3" Text="{Binding Total, StringFormat='{}{0:N2} ₽'}" HorizontalAlignment="Right" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        <DockPanel Grid.Row="2" Margin="16,0,16,16" LastChildFill="False">
+            <Button Content="Назад в каталог" Click="GoBack" />
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8">
+                <Button x:Name="DetailsButton" Content="Состав заказа" Click="OpenOrder" IsEnabled="False" />
+                <Button x:Name="DeleteButton" Content="Удалить" Click="DeleteOrder" IsEnabled="False" />
+                <Button x:Name="CreateButton" Content="Новый заказ" Click="CreateOrder" Background="#70B2AF" />
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>

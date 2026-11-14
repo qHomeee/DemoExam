@@ -1,0 +1,47 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="using:DemoForMuhin.Models"
+        xmlns:converters="using:DemoForMuhin.Presentation"
+        x:Class="DemoForMuhin.Views.ProductWindow" x:DataType="models:Product" x:CompileBindings="True"
+        Title="Чудо Обувь — карточка товара" Icon="/Assets/app.ico" WindowStartupLocation="CenterOwner"
+        Width="760" Height="510" MinWidth="660" MinHeight="420" Background="White">
+    <Window.Resources>
+        <converters:ProductImageConverter x:Key="ProductImage" />
+    </Window.Resources>
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Border Padding="16" Background="#D2F6E7">
+            <TextBlock Text="{Binding Name}" FontSize="21" FontWeight="Bold" TextWrapping="Wrap" />
+        </Border>
+        <ScrollViewer Grid.Row="1" Margin="16">
+            <Grid ColumnDefinitions="200,*" ColumnSpacing="18">
+                <Image Source="{Binding ImageFile, Converter={StaticResource ProductImage}}"
+                       Width="195" Height="195" Stretch="Uniform" VerticalAlignment="Top" />
+                <StackPanel Grid.Column="1" Spacing="7">
+                    <TextBlock Text="{Binding Manufacturer, StringFormat='Производство: {0}'}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Category.Name, StringFormat='Категория: {0}'}" />
+                    <TextBlock Text="{Binding SalePrice, StringFormat='Цена: {0:N2} ₽'}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Price, StringFormat='Без скидки: {0:N2} ₽'}" IsVisible="{Binding HasDiscount}" />
+                    <TextBlock Text="{Binding Material, StringFormat='Состав: {0}'}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding SizeRange, StringFormat='Размерный ряд: {0}'}" TextWrapping="Wrap" />
+                    <TextBlock x:Name="Unavailable" Text="Нет доступных размеров." IsVisible="False" />
+                    <ComboBox x:Name="SizePicker" PlaceholderText="Доступные размеры" HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="models:ProductSize">
+                                <TextBlock Text="{Binding AvailableLabel}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+        <DockPanel Grid.Row="2" Margin="16,0,16,16" LastChildFill="False">
+            <Button Content="Назад" Click="GoBack" />
+            <StackPanel x:Name="PurchaseControls" DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="Пар" VerticalAlignment="Center" />
+                <TextBox x:Name="QuantityInput" Text="1" Width="65" />
+                <Button Content="В корзину" Click="AddToCart" Background="#70B2AF" />
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>

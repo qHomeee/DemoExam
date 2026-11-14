@@ -30,7 +30,10 @@ sealed class Program
             var count = await db.Products.CountAsync();
             var stockRows = await db.ProductSizes.CountAsync();
             var pairs = await db.ProductSizes.SumAsync(x => x.AvailableQuantity);
-            Console.WriteLine($"PostgreSQL: {count} моделей, {stockRows} записей остатков, {pairs} пар.");
+            var users = await db.Users.CountAsync();
+            var orders = await db.Orders.CountAsync();
+            var items = await db.OrderItems.CountAsync();
+            Console.WriteLine($"PostgreSQL: {count} моделей, {stockRows} записей остатков, {pairs} пар, {users} пользователей, {orders} заказов, {items} позиций заказов.");
             return 0;
         }
         catch (Exception error)
